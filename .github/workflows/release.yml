@@ -8,6 +8,7 @@ on:
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 permissions:
+  actions: write
   contents: write
   issues: write
   pull-requests: write
@@ -40,6 +41,13 @@ jobs:
           publish-script: npx @changesets/cli publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # PRs pushed with GITHUB_TOKEN don't fire push events, so run CI by hand.
+      - name: Run CI on the release PR
+        if: steps.changesets.outputs.pullRequestNumber != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run test.yml --ref changeset-release/main
 
       - name: Create Codex plugin upload issue
         if: steps.changesets.outputs.published == 'true'
