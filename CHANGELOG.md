@@ -1,5 +1,11 @@
 # @valtown/skills
 
+## 0.4.1
+
+### Patch Changes
+
+- 555ff74: Create 'serve-html' skill for serving HTML files
+
 ## 0.4.0
 
 ### Minor Changes
