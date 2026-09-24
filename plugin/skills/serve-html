@@ -10,12 +10,12 @@ When the goal is to serve HTML content that already exists as a complete documen
 
 ## Choosing how to serve it
 
-Two patterns exist: 
+Two patterns exist:
 
-1. A static Deno text import
+1. Deno text import
 2. `serveFile`, which fetches the HTML file from esm.town
 
-**Default for a fixed, known file: a static import (`with { type: "text" }`).**
+**Default for a fixed, known file: a text import (`with { type: "text" }`).**
 Resolves the file content once, at module load / publish time — not on every
 request — so there's no per-request network hop at all, and the handler stays
 a plain sync function:
@@ -30,6 +30,12 @@ export default function (_req: Request) {
 
 Use this whenever the file being served is a relative, author-time-known
 path — the overwhelmingly common case for "serve this one HTML file."
+
+Deno also supports dynamic text imports:
+
+```ts
+const html = (await import("./index.html", { with: { type: "text" } })).default;
+```
 
 **`serveFile` from `std/utils`.** Reads the file via esm.town fetch API on
 every request, then sets `Content-Type` automatically by extension:
